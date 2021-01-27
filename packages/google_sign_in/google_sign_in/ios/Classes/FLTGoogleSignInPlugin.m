@@ -10,6 +10,8 @@
 // for more info.
 static NSString *const kClientIdKey = @"CLIENT_ID";
 
+static NSString *const kSignInClientIdKey = @"SIGN_IN_CLIENT_ID";
+
 static NSString *const kServerClientIdKey = @"SERVER_CLIENT_ID";
 
 // These error codes must match with ones declared on Android and Dart sides.
@@ -77,7 +79,11 @@ static FlutterError *getFlutterError(NSError *error) {
                                                        ofType:@"plist"];
       if (path) {
         NSMutableDictionary *plist = [[NSMutableDictionary alloc] initWithContentsOfFile:path];
-        [GIDSignIn sharedInstance].clientID = plist[kClientIdKey];
+        if (plist[kSignInClientIdKey] != nil) {
+          [GIDSignIn sharedInstance].clientID = plist[kSignInClientIdKey];
+        } else {
+          [GIDSignIn sharedInstance].clientID = plist[kClientIdKey];
+        }
         [GIDSignIn sharedInstance].serverClientID = plist[kServerClientIdKey];
         [GIDSignIn sharedInstance].scopes = call.arguments[@"scopes"];
         [GIDSignIn sharedInstance].hostedDomain = call.arguments[@"hostedDomain"];

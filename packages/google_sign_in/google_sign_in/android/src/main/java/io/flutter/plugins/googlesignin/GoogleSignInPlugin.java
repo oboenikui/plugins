@@ -326,17 +326,23 @@ public class GoogleSignInPlugin implements MethodCallHandler, FlutterPlugin, Act
             throw new IllegalStateException("Unknown signInOption");
         }
 
-        // Only requests a clientId if google-services.json was present and parsed
-        // by the google-services Gradle script.
-        // TODO(jackson): Perhaps we should provide a mechanism to override this
-        // behavior.
-        int clientIdIdentifier =
+        int signInClientIdIdentifier =
+            context
+                .getResources()
+                .getIdentifier("google_sign_in_web_client_id", "string", context.getPackageName());
+        int defaultClientIdIdentifier =
             context
                 .getResources()
                 .getIdentifier("default_web_client_id", "string", context.getPackageName());
-        if (clientIdIdentifier != 0) {
-          optionsBuilder.requestIdToken(context.getString(clientIdIdentifier));
-          optionsBuilder.requestServerAuthCode(context.getString(clientIdIdentifier));
+        String clientId = signInClientIdIdentifier != 0
+            ? context.getString(signInClientIdIdentifier)
+            : defaultClientIdIdentifier != 0
+            ? context.getString(defaultClientIdIdentifier)
+            : null;
+
+        if (clientId != null) {
+          optionsBuilder.requestIdToken(clientId);
+          optionsBuilder.requestServerAuthCode(clientId);
         }
         for (String scope : requestedScopes) {
           optionsBuilder.requestScopes(new Scope(scope));

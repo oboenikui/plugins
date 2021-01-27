@@ -26,8 +26,14 @@ enum SignInOption {
 class GoogleSignInUserData {
   /// Uses the given data to construct an instance. Any of these parameters
   /// could be null.
-  GoogleSignInUserData(
-      {this.displayName, this.email, this.id, this.photoUrl, this.idToken});
+  GoogleSignInUserData({
+    this.displayName,
+    this.email,
+    this.id,
+    this.photoUrl,
+    this.idToken,
+    this.serverAuthCode,
+  });
 
   /// The display name of the signed in user.
   ///
@@ -61,6 +67,10 @@ class GoogleSignInUserData {
   /// A token that can be sent to your own server to verify the authentication
   /// data.
   String idToken;
+
+  /// An auth code that can be sent to your own server to verify the
+  /// authentication data.
+  String serverAuthCode;
 
   @override
   int get hashCode =>

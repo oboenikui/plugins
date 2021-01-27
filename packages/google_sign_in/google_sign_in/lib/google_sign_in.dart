@@ -12,6 +12,7 @@ import 'src/common.dart';
 
 export 'package:google_sign_in_platform_interface/google_sign_in_platform_interface.dart'
     show SignInOption;
+
 export 'src/common.dart';
 export 'widgets.dart';
 
@@ -44,7 +45,8 @@ class GoogleSignInAccount implements GoogleIdentity {
         email = data.email,
         id = data.id,
         photoUrl = data.photoUrl,
-        _idToken = data.idToken {
+        _idToken = data.idToken,
+        _serverAuthCode = data.serverAuthCode {
     assert(id != null);
   }
 
@@ -69,6 +71,7 @@ class GoogleSignInAccount implements GoogleIdentity {
   final String photoUrl;
 
   final String _idToken;
+  final String _serverAuthCode;
   final GoogleSignIn _googleSignIn;
 
   /// Retrieve [GoogleSignInAuthentication] for this account.
@@ -92,11 +95,15 @@ class GoogleSignInAccount implements GoogleIdentity {
       shouldRecoverAuth: true,
     );
 
-    // On Android, there isn't an API for refreshing the idToken, so re-use
-    // the one we obtained on login.
+    // On Android, there isn't an API for refreshing the idToken and
+    // serverAuthCode, so re-use the one we obtained on login.
     if (response.idToken == null) {
       response.idToken = _idToken;
     }
+    if (response.serverAuthCode == null) {
+      response.serverAuthCode = _serverAuthCode;
+    }
+
     return GoogleSignInAuthentication._(response);
   }
 
